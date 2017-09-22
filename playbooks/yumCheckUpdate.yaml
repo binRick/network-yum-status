@@ -1,0 +1,13 @@
+---
+- hosts: all
+  gather_facts: True
+  tasks:
+  - name: Checking yum updates
+    yum: list=updates update_cache=true
+    register: yumUpdates
+  - name: Creating yum updates file
+    become: false
+    delegate_to: localhost
+    copy:
+      content: "{{yumUpdates}}"
+      dest: "{{yumUpdateDirectory}}/{{inventory_hostname}}.txt"
