@@ -1,4 +1,5 @@
 var config = require('./config'),
+fs = require('fs'),
     async = require('async'),
     pj = require('prettyjson'),
     redisServer = require('./redisServer.js'),
@@ -41,6 +42,10 @@ redisServer(function(err, redisPort) {
             process.exit(-1);
         });
         ansibleSpawn.on('exit', function(code) {
+var logFile = config.runsDirectory + '/' + Math.round(+new Date()/1000) + '.txt';
+
+fs.writeFileSync(logFile, cmdOut);
+
             if (code != 0) {
                 checkSpinner.fail(c.red('  Yum Check Failed..'));
             } else {
