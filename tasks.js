@@ -2,16 +2,39 @@ var config = require('./config'),
     dir = require('node-dir'),
     _ = require('underscore'),
     path = require('path'),
+    async = require('async'),
     fs = require('fs');
 
 
 module.exports = {
+    reachableResults: function(_cb) {
+        this.reachables(function(err, hosts) {
+            async.map(hosts, function(host, __cb) {
+                fs.readFile(config.resultsDirectory + '/' + host + '.json', function(err, dat) {
+dat = JSON.parse(dat.toString()).results;
+                    var hostResult = {host:host, updates:dat};
+                    __cb(err, hostResult);
+                });
+            }, function(errs, hostResults) {
+                _cb(err, hostResults);
+            });
+        });
+    },
+    reachables: function(_cb) {
+        this.latestStats(function(err, stats) {
+            var reachables = [];
+            _.each(_.keys(stats), function(s) {
+                if (stats[s].unreachable == 0 && stats[s].failures == 0)
+                    reachables.push(s);
+            });
+            _cb(err, reachables);
+        });
+    },
     unreachables: function(_cb) {
         this.latestStats(function(err, stats) {
-            console.log(stats);
             var fails = [];
             _.each(_.keys(stats), function(s) {
-                if (stats[s].unreachable > 0)
+                if (stats[s].unreachable > 0 || stats[s].failures > 0)
                     fails.push(s);
             });
             _cb(err, fails);
