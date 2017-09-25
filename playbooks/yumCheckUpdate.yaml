@@ -14,4 +14,4 @@
     delegate_to: localhost
     copy:
       content: "{{yumUpdates}}"
-      dest: "{{yumUpdateDirectory}}/{{inventory_hostname}}.txt"
+      dest: "{{yumUpdateDirectory}}/{{inventory_hostname}}.json"

@@ -1,5 +1,5 @@
 var config = require('./config'),
-fs = require('fs'),
+    fs = require('fs'),
     async = require('async'),
     pj = require('prettyjson'),
     redisServer = require('./redisServer.js'),
@@ -35,16 +35,15 @@ redisServer(function(err, redisPort) {
         ansibleSpawn.stdout.on('data', function(data) {
             cmdOut += data.toString();
         });
-        ansibleSpawn.stderr.on('data', function(data) {
-        });
+        ansibleSpawn.stderr.on('data', function(data) {});
         ansibleSpawn.on('error', function(dat) {
             console.log('error=', dat);
             process.exit(-1);
         });
         ansibleSpawn.on('exit', function(code) {
-var logFile = config.runsDirectory + '/' + Math.round(+new Date()/1000) + '.txt';
+            var logFile = config.runsDirectory + '/' + Math.round(+new Date() / 1000) + '.json';
 
-fs.writeFileSync(logFile, cmdOut);
+            fs.writeFileSync(logFile, cmdOut);
 
             if (code != 0) {
                 checkSpinner.fail(c.red('  Yum Check Failed..'));
@@ -58,7 +57,7 @@ fs.writeFileSync(logFile, cmdOut);
     };
 
     var yumCheckUpdatesCron = new CronJob({
-        cronTime: '0 0 */6 * * *',
+        cronTime: '0 0 0 * * *',
         onTick: yumCheckUpdates,
         start: true,
         runOnInit: true,
