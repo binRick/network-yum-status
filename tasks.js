@@ -7,16 +7,27 @@ var config = require('./config'),
 
 
 module.exports = {
+    topUpdates: function(qty, _cb) {
+        this.reachableResults(function(err, results) {
+            var sorted = _.sortBy(results, function(r) {
+                return r.updates.length;
+            }).reverse().slice(0, qty);
+            _cb(err, sorted);
+        });
+    },
     reachableResults: function(_cb) {
         this.reachables(function(err, hosts) {
             async.map(hosts, function(host, __cb) {
                 fs.readFile(config.resultsDirectory + '/' + host + '.json', function(err, dat) {
-dat = JSON.parse(dat.toString()).results;
-                    var hostResult = {host:host, updates:dat};
+                    dat = JSON.parse(dat.toString()).results;
+                    var hostResult = {
+                        host: host,
+                        updates: dat
+                    };
                     __cb(err, hostResult);
                 });
             }, function(errs, hostResults) {
-                _cb(err, hostResults);
+                _cb(errs, hostResults);
             });
         });
     },

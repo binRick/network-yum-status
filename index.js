@@ -60,6 +60,6 @@ redisServer(function(err, redisPort) {
         cronTime: '0 0 0 * * *',
         onTick: yumCheckUpdates,
         start: true,
-        runOnInit: true,
+        runOnInit: false,
     });
 });

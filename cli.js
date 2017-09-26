@@ -8,13 +8,22 @@ program
     .option('-u, --unreachables', 'List Unreachables')
     .option('-r, --reachables', 'List Reachables')
     .option('-R, --reachableresults', 'Reachable Results')
+    .option('-s, --sorted', 'Sorted Quantity [qty]',5)
     .option('-c, --cheese [type]', 'Add the specified type of cheese [marble]', 'marble')
     .parse(process.argv);
+
+
+ if (program.sorted) {
+    tasks.topUpdates(program.sorted, function(err, data) {
+        if (err) throw err;
+        console.log(data);
+    });
+}
 
  if (program.reachableresults) {
     tasks.reachableResults(function(err, data) {
         if (err) throw err;
-        console.log(data[0]);
+        console.log(data);
     });
 }
 
